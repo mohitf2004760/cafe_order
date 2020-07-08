@@ -12,19 +12,8 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   int totalamount = 0;
 
-  int calculateAmount(List<CartItem> cartItemList){
-    int subAmount = 0;
-    int amount = 0;
+  int showAmount(int amount){
     setState(() {
-      if(cartItemList.length == 0)
-      {
-        totalamount = 0;
-      }
-      //loop through cart list to calculate amount
-      for(int i=0; i<cartItemList.length;i++){
-        subAmount = cartItemList[i].item.price * cartItemList[i].qty;
-        amount = amount + subAmount;
-      }
       totalamount = amount;
     });
   }
@@ -59,7 +48,7 @@ class _HomeState extends State<Home> {
               onPressed:() {},
             )]
       ),
-      body:ItemGrid(calculateAmount: calculateAmount),
+      body:ItemGrid(showAmount : showAmount),
     );
   }
 }

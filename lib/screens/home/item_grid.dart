@@ -8,8 +8,8 @@ import 'package:cafeorder/models/user.dart';
 
 class ItemGrid extends StatefulWidget {
 
-  final Function calculateAmount;
-  ItemGrid ({this.calculateAmount});
+  final Function showAmount;
+  ItemGrid ({this.showAmount});
 
   @override
   _ItemGridState createState() => _ItemGridState();
@@ -17,10 +17,27 @@ class ItemGrid extends StatefulWidget {
 
 class _ItemGridState extends State<ItemGrid> {
 
-  int _tempCount = 0;
   final DatabaseService _db = DatabaseService();
   Cart _cart = Cart();
   List<CartItem> _cartItemList = List<CartItem>();
+  int totalamount = 0;
+
+  void calculateAmount(List<CartItem> cartItemList){
+    int subAmount = 0;
+    int amount = 0;
+    setState(() {
+      if(cartItemList.length == 0)
+      {
+        totalamount = 0;
+      }
+      //loop through cart list to calculate amount
+      for(int i=0; i<cartItemList.length;i++){
+        subAmount = cartItemList[i].item.price * cartItemList[i].qty;
+        amount = amount + subAmount;
+      }
+      totalamount = amount;
+    });
+  }
 
   void _onTileClicked(CartItem cartItem){
 
@@ -32,7 +49,8 @@ class _ItemGridState extends State<ItemGrid> {
       if(_cartItemList.length == 0)
       {
         _cartItemList.add(cartItem);
-        widget.calculateAmount(_cartItemList); //update app bar to reflect amount
+        calculateAmount(_cartItemList);
+        widget.showAmount(totalamount); //update app bar to reflect amount
         return;
       }
       //loop through cart list to find item, if found increment the qty
@@ -40,14 +58,16 @@ class _ItemGridState extends State<ItemGrid> {
         if(_cartItemList[i].item.item_id == cartItem.item.item_id && flag ==0)
         {
           _cartItemList[i].qty += 1;
-          widget.calculateAmount(_cartItemList); //update app bar to reflect amount
+          calculateAmount(_cartItemList);
+          widget.showAmount(totalamount); //update app bar to reflect amount
           flag = 1;
         }
       }
       // if even after iterating whole list, we do not find the item
       if(flag == 0) {
         _cartItemList.add(cartItem);
-        widget.calculateAmount(_cartItemList); //update app bar to reflect amount
+        calculateAmount(_cartItemList);
+        widget.showAmount(totalamount); //update app bar to reflect amount
         return;
       }
     });
@@ -177,7 +197,8 @@ class _ItemGridState extends State<ItemGrid> {
                     onPressed: (){
                      setState(() {
                        _cartItemList.removeRange(0, _cartItemList.length); //remove all items from the cartlist
-                       widget.calculateAmount(_cartItemList);
+                       calculateAmount(_cartItemList);
+                       widget.showAmount(totalamount);
                      });
                     },
                   ),
@@ -202,7 +223,9 @@ class _ItemGridState extends State<ItemGrid> {
                     ),),
                     color:Colors.brown.shade400,
                     elevation: 10.0,
-                    onPressed: (){},
+                    onPressed: (){
+                      print('Total Amount is${totalamount}');
+                    },
                   ),
                 ),
 
