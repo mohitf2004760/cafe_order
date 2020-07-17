@@ -1,6 +1,11 @@
+import 'dart:convert';
+
+import 'package:cafeorder/models/cart.dart';
 import 'package:cafeorder/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cafeorder/models/item.dart';
+import 'package:cafeorder/models/cartItem.dart';
+
 
 class DatabaseService {
 
@@ -10,6 +15,7 @@ class DatabaseService {
   //collection reference
   final CollectionReference usersProfileCollection = Firestore.instance.collection('usersProfile');
   final CollectionReference itemsCollection = Firestore.instance.collection('items');
+  final CollectionReference ordersCollection = Firestore.instance.collection('orders');
   //update database
 
 
@@ -38,4 +44,27 @@ class DatabaseService {
       }
       return await itemsList;
   }
+
+  Future saveOrderDetails(Cart cart, int totalamount, String status ) async {
+
+    String jsonString = jsonEncode(cart);
+    Map cartMap = jsonDecode(jsonString);
+
+
+    await ordersCollection.document().setData({
+          'timestamp':FieldValue.serverTimestamp(),
+          'totalamount':totalamount,
+          'cart': cartMap,
+          'status' : status,
+          'logOfStatusChange':[]
+
+          /*Example -
+          [
+            'uid':'user-id', 'cartItemsList':{'item':{'name':'name1','price':10},'qty':1},
+            'uid':'user-id', 'cartItemsList':{'item':{'name':'name2','price':20},'qty':2}
+            */
+        });
+    print('order saved in database');
+  }
+
 }

@@ -1,3 +1,5 @@
+import 'package:cafeorder/screens/home/payment-success.dart';
+import 'package:cafeorder/screens/home/payment.dart';
 import 'package:cafeorder/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'screens/wrapper.dart';
@@ -20,6 +22,7 @@ class MyApp extends StatelessWidget {
         home:Wrapper(),
           routes: <String, WidgetBuilder>{
             '/homepage': (BuildContext context) => Home(),
+            '/payment-success' : (BuildContext context) => PaymentSuccess(),
           },
       ));
   }

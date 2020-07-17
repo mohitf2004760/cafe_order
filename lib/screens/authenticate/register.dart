@@ -199,7 +199,7 @@ class _RegisterState extends State<Register> {
                             color: Colors.white
                         ),
                       ),
-                      onPressed:() => _register(), //change it to _submit for OTP wala thing,
+                      onPressed:() => _submit() //_register(), //change it to _submit for OTP wala thing,
                     ),
                     SizedBox(height: 12.0,),
                     Text(
